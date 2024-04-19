@@ -28,8 +28,10 @@
                         <td>{{ item.categoriesName }}</td>
                         <td class="text-center">
                             <div class="d-flex align-center justify-center">
-                                <v-btn class="ma-1" @click="dialogEdit = true, currentItem = item">Edit</v-btn>
-                                <v-btn class="ma-1" @click="confirm = true, idDelete = item.categoriesId">Delete</v-btn>
+                                <v-btn icon="mdi-pencil" class="ma-1" color="primary"
+                                    @click="dialogEdit = true, currentItem = item"></v-btn>
+                                <v-btn icon="mdi-delete" color="red" class="ma-1"
+                                    @click="confirm = true, idDelete = item.fruitId"></v-btn>
                             </div>
                         </td>
                     </tr>
@@ -41,8 +43,16 @@
                 </tbody>
             </v-table>
         </v-card>
-        <div class="float-right ma-2">
-            <v-pagination v-model="page" :length="4" rounded="2"></v-pagination>
+        <div class="text-center">
+            <v-container>
+                <v-row justify="center">
+                    <v-col cols="8">
+                        <v-container class="max-width">
+                            <v-pagination v-model="page" :length="totalItems" class="my-4"></v-pagination>
+                        </v-container>
+                    </v-col>
+                </v-row>
+            </v-container>
         </div>
         <Confirm :confirm="confirm" @deleteData="deleteData" @close="confirm = false" />
         <Category_create :dialog="dialog" @close="dialog = false" @loadData="loadData" />
@@ -67,12 +77,15 @@ const confirm = ref(false);
 const dialogEdit = ref(false);
 const idDelete = ref('');
 const search = ref('');
-const totals = ref<any>(0);
+let lengthPage = ref('')
 const tableData = ref<any | undefined>([]);
+const totalItems = ref<number | undefined>(0);
 const loadData = async () => {
     const res = await fetchCategories();
     tableData.value = res?.items;
-    totals.value = res?.totalItems?.toString();
+    if (res?.totalItems !== undefined) {
+        totalItems.value = Math.ceil(res?.totalItems / DEFAULT_COMMON_LIST_QUERY.limit);
+    }
 }
 watch(page, (newVal) => {
     DEFAULT_COMMON_LIST_QUERY.page = newVal
@@ -88,7 +101,6 @@ const searchData = async () => {
     DEFAULT_COMMON_LIST_QUERY.page = 1
     const data = await searchCategories();
     tableData.value = data?.items;
-    page.value = 1;
 }
 const deleteData = async () => {
     const res = await deleteCategory(idDelete.value);
