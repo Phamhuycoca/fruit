@@ -91,7 +91,14 @@
                         </div>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn size="small" color="primary" variant="outlined">Đặt hàng</v-btn>
+                        <v-btn size="small" @click="byNow" color="primary" variant="outlined">
+                            <v-icon>mdi-credit-card-outline</v-icon>
+                            Mua ngay</v-btn>
+                        <v-btn size="small" @click="byNow" color="red" variant="text">
+                            <v-icon>
+                                mdi-cart-variant
+                            </v-icon>
+                        </v-btn>
                         <v-spacer></v-spacer>
 
                         <v-btn :icon="show[index] ? 'mdi-chevron-up' : 'mdi-chevron-down'"
@@ -108,8 +115,10 @@
                 </v-card>
             </v-col>
         </v-row>
-        <div class="text-center">
-            <v-pagination v-model="page" :length="4" rounded="circle"></v-pagination>
+        <div class="text-center ma-10">
+            <!-- <v-pagination v-model="page" :length="4" rounded="circle"></v-pagination> -->
+            <v-btn variant="outlined" color="primary">
+                Xem thêm</v-btn>
         </div>
     </div>
 </template>
@@ -120,7 +129,9 @@ import { onMounted, ref } from 'vue';
 const { fetchCategories } = useCategory();
 import { useFruit } from '@/services/fruit.service';
 import { formatNumberWithCommas } from '@/common/helpers';
+import { useAuthService } from '@/services/auth.service';
 const { fetchFruits } = useFruit();
+const { isAuthenticated } = useAuthService();
 const page = ref(1);
 const categories = ref<any | undefined>([]);
 const fruits = ref<any | undefined>([]);
@@ -133,6 +144,13 @@ const loadData = async () => {
     categories.value = res?.items;
     const response = await fetchFruits();
     fruits.value = response?.items;
+}
+const byNow = () => {
+    if (isAuthenticated.value) {
+        alert('Ok');
+    } else {
+        alert('ko')
+    }
 }
 onMounted(async () => {
     loadData();

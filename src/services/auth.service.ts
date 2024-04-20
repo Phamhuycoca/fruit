@@ -24,6 +24,17 @@ export const useAuthService=()=>{
         }
         return res;
     }
+    const register=async(data:any)=> {
+        const res=await authApi.register(data);
+        if (res.success) {
+            showSuccessNotification(res.message);
+        } else {
+            if (res.errors !== undefined) {
+                showErrors(res.errors);
+            }
+        }
+        return res;
+      }
     
     const logout=async()=>{
         const res=await authApi.logout();
@@ -45,6 +56,7 @@ export const useAuthService=()=>{
         login,
         isAuthenticated,
         hasToken,
-        logout
+        logout,
+        register
     }
 }

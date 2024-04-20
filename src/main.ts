@@ -1,6 +1,6 @@
 import '@mdi/font/css/materialdesignicons.css'
 import "vue-toastification/dist/index.css";
-
+import VueGoogleMaps from '@fawmi/vue-google-maps';
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import Toast from "vue-toastification";
@@ -17,6 +17,11 @@ const vuetify = createVuetify({
   })
 const app = createApp(App)
 app.use(vuetify)
+app.use(VueGoogleMaps, {
+  load: {
+    key: 'AIzaSyCHR2XtPri-AqwWgw5EMyfOvMtkZkOjhXs',
+  },
+})
 app.use(Toast, {
     transition: "Vue-Toastification__bounce",
     maxToasts: 20,

@@ -1,8 +1,11 @@
 export enum PageName {
     LOGIN_PAGE = 'login_page',
+    REGISTER_PAGE = 'register_page',
+    ADMIN_PAGE = 'admin_page',
     DASHBOARD_PAGE = 'dashboard_page',
     NOT_FOUND_PAGE = 'not_found_page',
     FORBIDDEN_PAGE = 'forbidden_page',
+    FRUITDETAIL_PAGE = 'fruit_detail _page',
   }
   
   export enum SupportLanguage {
@@ -118,7 +121,7 @@ export enum PageName {
   export const DEFAULT_FIRST_PAGE = 1;
   
   export enum Role {
-    EMPLOYER = 'User',
+    USER = 'User',
     ADMIN = 'Admin',
   }
   

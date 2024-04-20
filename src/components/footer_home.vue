@@ -1,26 +1,50 @@
 <template>
-    <v-footer class="d-flex flex-column">
-        <div class="bg-teal d-flex w-100 align-center px-4">
-            <strong>Get connected with us on social networks!</strong>
-
-            <v-spacer></v-spacer>
-
-            <v-btn v-for="icon in icons" :key="icon" :icon="icon" class="mx-4" size="small" variant="plain"></v-btn>
-        </div>
-
-        <div class="px-4 py-2 bg-black text-center w-100">
-            {{ new Date().getFullYear() }} — <strong>Vuetify</strong>
-        </div>
-    </v-footer>
+    <GMapMap :center="center" :zoom="10" map-type-id="terrain" style="width: 100vw; height: 20rem">
+        <GMapMarker :key="index" v-for="(m, index) in markers" :position="m.position" :clickable="true"
+            :draggable="true" @click="openMarker(m.id)">
+            <GMapInfoWindow :closeclick="true" @closeclick="openMarker(null)" :opened="openedMarkerID === m.id">
+                <div>I am in info window {{ m.id }} </div>
+            </GMapInfoWindow>
+        </GMapMarker>
+    </GMapMap>
 </template>
-<script lang="ts" setup>
-import { ref } from "vue";
 
-const icons = ref([
-    'mdi-facebook',
-    'mdi-twitter',
-    'mdi-linkedin',
-    'mdi-instagram',
-])
+<script lang="ts">
+import { defineComponent, ref } from 'vue';
 
+export default defineComponent({
+    data() {
+        return {
+            openedMarkerID: null as number | null,
+            center: { lat: 20.9476712, lng: 105.7552136 },
+            markers: [
+                {
+                    id: 1,
+                    position: {
+                        lat: 20.9476712,
+                        lng: 105.7552136
+                    }
+                },
+                {
+                    id: 2,
+                    position: {
+                        lat: 20.7858446,
+                        lng: 106.6144558
+                    }
+                }
+            ]
+        };
+    },
+    methods: {
+        openMarker(id: number | null) {
+            this.openedMarkerID = id ?? null;
+        }
+    }
+});
 </script>
+
+<style scoped>
+body {
+    margin: 0;
+}
+</style>

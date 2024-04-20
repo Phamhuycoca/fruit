@@ -38,8 +38,10 @@
         </div>
         <RouterView v-else />
       </v-main>
-      <Footer_Home style="padding: 0;margin-top: 50px;" />
+      <Footer_Home style="padding: 0;margin-top: 50px;height: 100vh;" />
     </v-app>
+    <v-btn v-if="showScrollButton" class="scroll-to-top" @click="scrollToTop" icon="mdi-arrow-up-bold" color="primary">
+    </v-btn>
   </div>
 </template>
 
@@ -49,7 +51,23 @@ import Footer_Home from '../components/footer_home.vue'
 import router from '@/router';
 import { RouterView } from 'vue-router';
 import mainbody from '../layouts/home/mainbody.vue'
-
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll);
+})
+const showScrollButton = ref(false);
+const handleScroll = () => {
+  showScrollButton.value = window.scrollY > 100; // Adjust 1000 to your desired scroll threshold
+}
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleScroll);
+})
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
 </script>
 
 <style scoped>
@@ -88,5 +106,11 @@ import mainbody from '../layouts/home/mainbody.vue'
   left: 0;
   width: 60% !important;
   height: 100% !important;
+}
+
+.scroll-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
 }
 </style>
