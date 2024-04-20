@@ -182,3 +182,11 @@ export function showErrors (errors: any[]){
       }, index * 1000);
   });
 };
+export const formatPrice  = (value?: string | null): string => {
+  if (typeof value === 'string' && value.trim() !== '') {
+    return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  } else {
+    return ''; // Return an empty string if value is undefined, null, or empty string
+  }
+};
+

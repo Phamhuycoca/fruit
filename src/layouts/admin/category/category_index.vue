@@ -28,10 +28,10 @@
                         <td>{{ item.categoriesName }}</td>
                         <td class="text-center">
                             <div class="d-flex align-center justify-center">
-                                <v-btn icon="mdi-pencil" class="ma-1" color="primary"
+                                <v-btn icon="mdi-pencil" size="small" class="ma-1" color="primary"
                                     @click="dialogEdit = true, currentItem = item"></v-btn>
-                                <v-btn icon="mdi-delete" color="red" class="ma-1"
-                                    @click="confirm = true, idDelete = item.fruitId"></v-btn>
+                                <v-btn icon="mdi-delete" size="small" color="red" class="ma-1"
+                                    @click="confirm = true, idDelete = item.categoriesId"></v-btn>
                             </div>
                         </td>
                     </tr>

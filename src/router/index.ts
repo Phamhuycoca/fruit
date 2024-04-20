@@ -6,13 +6,36 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: import('../views/HomeView.vue')
-    },
-    {
-      path: '/about',
-      name: 'about',
-      component: () => import('../views/AboutView.vue')
-    },
+      component: import('../views/HomeView.vue'),
+      children:[
+        {
+          path: '/',
+          name: 'mainbody',
+          component: import('../layouts/home/mainbody.vue')
+        },
+        {
+          path: '/about',
+          name: 'about',
+          component: () => import('../views/AboutView.vue')
+        },
+        {
+          path: '/fruit_detail/:id',
+          name: 'fruit_detail',
+          component: () => import('../layouts/home/fruit/fruit_detail.vue')
+        },
+        {
+          path: '/login',
+          name: 'login',
+          component: () => import('../layouts/auth/login_page.vue')
+        },
+        {
+          path: '/register',
+          name: 'register',
+          component: () => import('../layouts/auth/register_page.vue')
+        },
+      ]
+    },    
+   
     {
       path: '/admin',
       name: 'admin',

@@ -45,7 +45,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(item, index) in tableData" :key="index">
+                        <tr v-for="(item, index) in tableData" :key="index" v-if="tableData.length > 0">
                             <td class="text-center" style="max-width: 10px;">{{ index + 1 }}</td>
                             <td style="display: flex;justify-content: center;">
                                 <v-img style="width: 50px;height: 50px;" :src="item.fruitImg" />
@@ -53,18 +53,24 @@
                             <td class="text-center">{{ item.fruitName }}</td>
                             <td class="text-center">{{ item.fruitPrice }}</td>
                             <td class="text-center"> {{ item.priceDiscount === null ? '' : item.priceDiscount }}</td>
-                            <td class="text-center">{{ item.discount === null ? '' : `${item.discount}%` }}</td>
+                            <td class="text-center">{{ item.discount === null || item.discount === 'null' ? '' :
+                                `${item.discount}%` }}</td>
                             <td style="max-width: 250px;height: 58px;" class="text-truncate">{{
                                 item.fruitDescription }}</td>
                             <td class="text-center">{{ item.categoriesName }}</td>
                             <td class="text-center">{{ item.fruitQuantity }}</td>
                             <td class="text-center">
                                 <div class="d-flex align-center justify-center">
-                                    <v-btn icon="mdi-pencil" class="ma-1" color="primary"
+                                    <v-btn icon="mdi-pencil" size="small" class="ma-1" color="primary"
                                         @click="dialogEdit = true, currentItem = item"></v-btn>
-                                    <v-btn icon="mdi-delete" color="red" class="ma-1"
+                                    <v-btn icon="mdi-delete" size="small" color="red" class="ma-1"
                                         @click="confirm = true, idDelete = item.fruitId"></v-btn>
                                 </div>
+                            </td>
+                        </tr>
+                        <tr v-else style="height: 58px;">
+                            <td colspan="12">
+                                <p class="text-center text-red">Không có dữ liệu</p>
                             </td>
                         </tr>
                     </tbody>
@@ -128,7 +134,6 @@ const searchData = async () => {
 const loadData = async () => {
     const res = await fetchFruits();
     tableData.value = res?.items;
-    console.log(res?.items);
     if (res?.totalItems !== undefined) {
         totalItems.value = Math.ceil(res?.totalItems / DEFAULT_COMMON_LIST_QUERY.limit);
     }
