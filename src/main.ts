@@ -6,6 +6,7 @@ import { createPinia } from 'pinia'
 import Toast from "vue-toastification";
 import App from './App.vue'
 import router from './router'
+const googlekey = import.meta.env.VITE_MY_VARIABLE;
 // Vuetify
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
@@ -19,7 +20,7 @@ const app = createApp(App)
 app.use(vuetify)
 app.use(VueGoogleMaps, {
   load: {
-    key: 'AIzaSyCHR2XtPri-AqwWgw5EMyfOvMtkZkOjhXs',
+    key: googlekey,
   },
 })
 app.use(Toast, {
