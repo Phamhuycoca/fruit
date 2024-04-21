@@ -11,6 +11,8 @@
             <v-list density="compact" nav>
                 <v-list-item to="/admin/dashboard" prepend-icon="mdi-monitor-dashboard" title="Dashboard"
                     value="Dashboard"></v-list-item>
+                <v-list-item to="/admin/store" prepend-icon="mdi-store-check-outline" title="Quản lý cửa hàng"
+                    value="Quản cửa hàng"></v-list-item>
                 <v-list-item to="/admin/fruits" prepend-icon="mdi-fruit-cherries" title="Quản lý hoa quả"
                     value="Quản lý hoa quả"></v-list-item>
                 <v-list-item to="/admin/bill" prepend-icon="mdi-cash" title="Quản lý hóa đơn"

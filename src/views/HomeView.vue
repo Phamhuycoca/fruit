@@ -3,7 +3,7 @@
     <v-app>
       <v-app-bar style="background-color: #F5F5F5;" :elevation="0">
         <v-toolbar-title>
-          <div style="display: flex; align-items: center;height:80px;width: 400px;">
+          <div style="display: flex; align-items: center;height:80px;width: 500px;">
             <v-img :width="80" style="margin: 5px;border-radius: 2px;width: 1%;height: 60px;padding:10px;" cover
               src="https://res.cloudinary.com/drhdgw1xx/image/upload/v1713553164/42880a403e2a7a2d1e2095a19daa4ead_l6efhf.jpg"></v-img>
             <router-link class="menu__link" style="text-decoration: none;margin:10px;font-size: 15px;" to="">Trang
@@ -12,6 +12,8 @@
               phẩm</router-link>
             <router-link class="menu__link" style="text-decoration: none;margin:10px;font-size: 15px;" to="">Về chúng
               tôi</router-link>
+            <router-link class="menu__link" style="text-decoration: none;margin:10px;font-size: 15px;" to="">Chi nhánh
+              cửa hàng</router-link>
           </div>
         </v-toolbar-title>
         <div style="display: flex; justify-content: space-between; align-items: center;max-width: 90px;width: 100%;">
@@ -35,10 +37,11 @@
         <div v-if="$router.currentRoute.value.path === '/'">
           <Carousel_Home class="px-4" />
           <mainbody />
+          <Google_map style="height: 100vh;" />
         </div>
         <RouterView v-else />
       </v-main>
-      <Footer_Home style="padding: 0;margin-top: 50px;height: 100vh;" />
+      <Footer_Home style="padding: 0;margin-top: 20px;" />
     </v-app>
     <v-btn v-if="showScrollButton" class="scroll-to-top" @click="scrollToTop" icon="mdi-arrow-up-bold" color="primary">
     </v-btn>
@@ -52,6 +55,7 @@ import router from '@/router';
 import { RouterView } from 'vue-router';
 import mainbody from '../layouts/home/mainbody.vue'
 import { onBeforeUnmount, onMounted, ref } from 'vue';
+import Google_map from '@/components/google_map.vue';
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
 })

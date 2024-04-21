@@ -46,6 +46,9 @@ const routes: Array<RouteRecordRaw> = [
       path: '/admin',
       name: PageName.ADMIN_PAGE,
       component: import('../views/AdminView.vue'),
+      meta:{
+        public:true
+      },
       children:[
         {
           path:'dashboard',
@@ -66,6 +69,11 @@ const routes: Array<RouteRecordRaw> = [
           path:'categories',
           name:'categories',
           component: import('../layouts/admin/category/category_index.vue')
+        },
+        {
+          path:'store',
+          name:'store',
+          component: import('../layouts/admin/store/store_index.vue')
         }
       ]
     },
