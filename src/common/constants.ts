@@ -5,7 +5,8 @@ export enum PageName {
     DASHBOARD_PAGE = 'dashboard_page',
     NOT_FOUND_PAGE = 'not_found_page',
     FORBIDDEN_PAGE = 'forbidden_page',
-    FRUITDETAIL_PAGE = 'fruit_detail _page',
+    FRUITDETAIL_PAGE = 'fruit_detail_page',
+    PRODUCTS_PAGE = 'product_page',
   }
   
   export enum SupportLanguage {
@@ -129,6 +130,13 @@ export enum PageName {
     page: DEFAULT_FIRST_PAGE,
     limit: DEFAULT_LIMIT_FOR_PAGINATION,
     keyword: '',
+  };
+  export const DEFAULT_COMMON_LIST_QUERY_PRODUCTS = {
+    page: DEFAULT_FIRST_PAGE,
+    limit: DEFAULT_LIMIT_FOR_PAGINATION,
+    keyword: '',
+    price: '',
+    sale: '',
   };
   export const optionsSelect = [
     {

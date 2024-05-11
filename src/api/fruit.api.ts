@@ -19,5 +19,11 @@ class fruitApiService extends ApiService {
   deleteData(id: any): Promise<any> {
    return this.client.delete(`${this.baseUrl}/${id}`);
   }
+  getAllProducts(DEFAULT_COMMON_LIST_QUERY_PRODUCTS:any):Promise<any> {
+    return this.client.get(`${this.baseUrl}/GetAllProducts`, {
+        params: DEFAULT_COMMON_LIST_QUERY_PRODUCTS
+        }
+    );
+}
 }
 export const fruitApi = new fruitApiService({ baseUrl: "/Fruit" }, axiosInstance);

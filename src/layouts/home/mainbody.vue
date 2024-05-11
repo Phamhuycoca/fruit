@@ -131,10 +131,10 @@ import { useFruit } from '@/services/fruit.service';
 import { formatNumberWithCommas } from '@/common/helpers';
 import { useAuthService } from '@/services/auth.service';
 const { fetchFruits } = useFruit();
-const { isAuthenticated } = useAuthService();
-const page = ref(1);
 const categories = ref<any | undefined>([]);
 const fruits = ref<any | undefined>([]);
+const { isAuthenticated } = useAuthService();
+const page = ref(1);
 const show = ref(Array(fruits.value.length).fill(false));
 const toggleDescription = (index: number) => {
     show.value[index] = !show.value[index];

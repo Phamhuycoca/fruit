@@ -25,6 +25,11 @@ const routes: Array<RouteRecordRaw> = [
           component: () => import('../views/AboutView.vue')
         },
         {
+          path: '/products',
+          name: PageName.PRODUCTS_PAGE,
+          component: () => import('../layouts/home/products/product_index.vue')
+        },
+        {
           path: '/fruit_detail/:id',
           name: PageName.FRUITDETAIL_PAGE,
           component: () => import('../layouts/home/fruit/fruit_detail.vue')

@@ -1,6 +1,6 @@
 
 import { fruitApi } from "@/api/fruit.api";
-import { DEFAULT_COMMON_LIST_QUERY } from "@/common/constants";
+import { DEFAULT_COMMON_LIST_QUERY, DEFAULT_COMMON_LIST_QUERY_PRODUCTS } from "@/common/constants";
 
 import { showErrors } from "@/common/helpers";
 export const useFruit = () => {
@@ -74,7 +74,47 @@ export const useFruit = () => {
     }
   };
 
+  const fetchGetAllProducts = async () => {
+    try {
+      const res = await fruitApi.getAllProducts(DEFAULT_COMMON_LIST_QUERY_PRODUCTS);
+      if (res.errors !== undefined) {
+        showErrors(res.errors);
+    }
+      if (res.success) {
+        return {
+          items: res.items,
+          totalItems: res.totalItems,
+        };
+      }
+      return {
+        items: [],
+        totalItems: 0,
+      };
+    } catch (error) {
+      console.error("Error Fetching:", error);
+    } 
+  };
  
+  const searchGetAllProducts = async () => {
+    try {
+      const res = await fruitApi.getAllProducts(DEFAULT_COMMON_LIST_QUERY_PRODUCTS);
+      if (res.errors !== undefined) {
+        showErrors(res.errors);
+    }
+      if (res.success) {
+        return {
+          items: res.items,
+          totalItems: res.totalItems,
+        };
+      }
+      return {
+        items: [],
+        totalItems: 0,
+      };
+    } catch (error) {
+      console.error("Error Fetching:", error);
+    } 
+  };
   return {
     query,
     createFruit,
@@ -82,6 +122,8 @@ export const useFruit = () => {
     deleteFruit,
     fetchFruits,
     searchFruits,
-    getFruit
+    getFruit,
+    fetchGetAllProducts,
+    searchGetAllProducts
   };
 };

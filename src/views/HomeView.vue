@@ -6,9 +6,10 @@
           <div style="display: flex; align-items: center;height:80px;width: 500px;">
             <v-img :width="80" style="margin: 5px;border-radius: 2px;width: 1%;height: 60px;padding:10px;" cover
               src="https://res.cloudinary.com/drhdgw1xx/image/upload/v1713553164/42880a403e2a7a2d1e2095a19daa4ead_l6efhf.jpg"></v-img>
-            <router-link class="menu__link" style="text-decoration: none;margin:10px;font-size: 15px;" to="">Trang
+            <router-link class="menu__link" style="text-decoration: none;margin:10px;font-size: 15px;" to="/">Trang
               chủ</router-link>
-            <router-link class="menu__link" style="text-decoration: none;margin:10px;font-size: 15px;" to="">Sản
+            <router-link class="menu__link" style="text-decoration: none;margin:10px;font-size: 15px;"
+              to="/products">Sản
               phẩm</router-link>
             <router-link class="menu__link" style="text-decoration: none;margin:10px;font-size: 15px;" to="">Về chúng
               tôi</router-link>
