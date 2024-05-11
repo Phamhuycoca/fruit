@@ -40,6 +40,9 @@
                                 Số lượng
                             </th>
                             <th class="text-center">
+                                Chi nhánh
+                            </th>
+                            <th class="text-center">
                                 Tùy chọn
                             </th>
                         </tr>
@@ -59,6 +62,7 @@
                                 item.fruitDescription }}</td>
                             <td class="text-center">{{ item.categoriesName }}</td>
                             <td class="text-center">{{ item.fruitQuantity }}</td>
+                            <td class="text-center">{{ item.storeName }}</td>
                             <td class="text-center">
                                 <div class="d-flex align-center justify-center">
                                     <v-btn icon="mdi-pencil" size="small" class="ma-1" color="primary"

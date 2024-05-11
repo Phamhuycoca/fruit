@@ -53,7 +53,8 @@ const onSubmit = async () => {
     if (res.success) {
         setTimeout(() => {
             loading.value = false;
-            router.push('/');
+            window.location.href = "/";
+            //router.push('/');
         }, 3000);
     } else {
         loading.value = false;

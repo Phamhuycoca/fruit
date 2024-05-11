@@ -94,13 +94,12 @@
                         <v-btn size="small" @click="byNow" color="primary" variant="outlined">
                             <v-icon>mdi-credit-card-outline</v-icon>
                             Mua ngay</v-btn>
-                        <v-btn size="small" @click="byNow" color="red" variant="text">
+                        <v-btn size="small" @click="addToCart(item.fruitId)" color="red" variant="text">
                             <v-icon>
                                 mdi-cart-variant
                             </v-icon>
                         </v-btn>
                         <v-spacer></v-spacer>
-
                         <v-btn :icon="show[index] ? 'mdi-chevron-up' : 'mdi-chevron-down'"
                             @click="toggleDescription(index)"></v-btn>
                     </v-card-actions>
@@ -128,12 +127,14 @@ import { useCategory } from '@/services/categoty.service';
 import { onMounted, ref } from 'vue';
 const { fetchCategories } = useCategory();
 import { useFruit } from '@/services/fruit.service';
-import { formatNumberWithCommas } from '@/common/helpers';
+import { formatNumberWithCommas, showErrors, showSuccessNotification } from '@/common/helpers';
 import { useAuthService } from '@/services/auth.service';
+import { useCart } from '@/services/cart.service';
 const { fetchFruits } = useFruit();
 const categories = ref<any | undefined>([]);
 const fruits = ref<any | undefined>([]);
 const { isAuthenticated } = useAuthService();
+const { createCart } = useCart();
 const page = ref(1);
 const show = ref(Array(fruits.value.length).fill(false));
 const toggleDescription = (index: number) => {
@@ -148,6 +149,25 @@ const loadData = async () => {
 const byNow = () => {
     if (isAuthenticated.value) {
         alert('Ok');
+    } else {
+        alert('ko')
+    }
+}
+const addToCart = async (id: string) => {
+    if (isAuthenticated.value) {
+        alert(id);
+        const formData = new FormData();
+        formData.append('fruitId', id);
+        formData.append('quantity', '1');
+        const res = await createCart(formData);
+        if (res.success) {
+            showSuccessNotification(res.message)
+        }
+        else {
+            if (res.errors !== undefined) {
+                showErrors(res.errors);
+            }
+        }
     } else {
         alert('ko')
     }

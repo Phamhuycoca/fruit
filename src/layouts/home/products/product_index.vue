@@ -7,11 +7,11 @@
                         Danh mục
                     </v-card-title>
                     <v-card-item>
-                        <v-text-field density="compact" placeholder="Nhập thông tin" variant="solo-filled"
-                            append-inner-icon="mdi-magnify">
+                        <v-text-field @change="searchData()" v-model="search" density="compact"
+                            placeholder="Nhập thông tin" variant="solo-filled" append-inner-icon="mdi-magnify">
 
                         </v-text-field>
-                        <v-select density="compact" label="Chọn danh mục" :items="categories"
+                        <v-select density="compact" label="Chọn danh mục" v-model="categoryId" :items="categories"
                             item-title="categoriesName" item-value="categoriesId" variant="solo-filled"></v-select>
                         <v-select density="compact" v-model="price" label="Chọn giá" item-title="text"
                             item-value="value" :items="prices" variant="solo-filled"></v-select>
@@ -97,8 +97,8 @@ import { useCategory } from "@/services/categoty.service";
 import { useFruit } from '@/services/fruit.service';
 import { DEFAULT_COMMON_LIST_QUERY, DEFAULT_COMMON_LIST_QUERY_PRODUCTS } from '@/common/constants';
 import { useAuthService } from '@/services/auth.service';
-const { fetchFruits, searchFruits, fetchGetAllProducts } = useFruit();
-import { formatNumberWithCommas } from '@/common/helpers';
+const { fetchFruits, searchGetAllProducts, fetchGetAllProducts } = useFruit();
+import { formatNumberWithCommas, showErrorNotification } from '@/common/helpers';
 
 const { fetchCategories } = useCategory();
 const fruits = ref<any | undefined>([]);
@@ -108,6 +108,9 @@ const page = ref(1);
 const show = ref(Array(fruits.value.length).fill(false));
 const price = ref('');
 const sale = ref('');
+const categoryId = ref('');
+const search = ref('');
+
 const toggleDescription = (index: number) => {
     show.value[index] = !show.value[index];
 };
@@ -119,7 +122,7 @@ const byNow = () => {
     if (isAuthenticated.value) {
         alert('Ok');
     } else {
-        alert('ko')
+        showErrorNotification('Vui lòng đăng nhập');
     }
 }
 const categories = ref<any | undefined>([]);
@@ -139,6 +142,21 @@ watch(sale, (newval) => {
     DEFAULT_COMMON_LIST_QUERY_PRODUCTS.sale = newval;
     loadData();
 });
+watch(categoryId, (newval) => {
+    DEFAULT_COMMON_LIST_QUERY_PRODUCTS.categoriesId = newval;
+    loadData();
+});
+watch(search, (newval, oldval) => {
+    if (newval === '') {
+        page.value = 1;
+    }
+})
+const searchData = async () => {
+    DEFAULT_COMMON_LIST_QUERY_PRODUCTS.keyword = search.value;
+    DEFAULT_COMMON_LIST_QUERY_PRODUCTS.page = 1
+    const data = await searchGetAllProducts();
+    fruits.value = data?.items;
+}
 onMounted(async () => {
     const category = await fetchCategories();
     categories.value = category?.items;

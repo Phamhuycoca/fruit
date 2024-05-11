@@ -19,19 +19,33 @@
         </v-toolbar-title>
         <div style="display: flex; justify-content: space-between; align-items: center;max-width: 90px;width: 100%;">
           <v-badge color="error" content="6">
-            <v-icon icon="mdi-bell" size="large"></v-icon>
+            <v-icon icon="mdi-bell-outline" size="large"></v-icon>
           </v-badge>
-          <v-avatar id="menu-activator" style="cursor: pointer;">
-            <v-img alt="John" src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
-          </v-avatar>
-          <v-menu activator="#menu-activator" style="cursor: pointer;" width="200">
-            <v-list>
-              <v-list-item>
-                <v-list-item-title style="height: 40px;">Xem thông tin</v-list-item-title>
-                <v-list-item-title>Đăng xuất</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
+          <div v-if="isAuthenticated">
+            <v-avatar id="menu-activator" style="cursor: pointer;">
+              <v-img alt="John" src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
+            </v-avatar>
+            <v-menu activator="#menu-activator" style="cursor: pointer;" width="300">
+              <v-list>
+                <v-list-item>
+                  <v-list-item-title style="height: 40px;">Xem thông tin</v-list-item-title>
+                  <v-list-item-title style="height: 40px;" @click="openCart = true">Giỏ hàng của bạn</v-list-item-title>
+                  <v-list-item-title style="height: 40px;">Danh sách đơn hàng</v-list-item-title>
+                  <v-list-item-title>Đăng xuất</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </div>
+          <div v-else style="margin-right: 10px;">
+            <!-- <v-avatar style="cursor: pointer;">
+              <v-img alt="John" src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
+            </v-avatar> -->
+            <router-link to="/login">
+              <v-icon style="cursor: pointer;" size="large">
+                mdi-account-circle-outline
+              </v-icon>
+            </router-link>
+          </div>
         </div>
       </v-app-bar>
       <v-main>
@@ -46,10 +60,12 @@
     </v-app>
     <v-btn v-if="showScrollButton" class="scroll-to-top" @click="scrollToTop" icon="mdi-arrow-up-bold" color="primary">
     </v-btn>
+    <Cart_index :openCart="openCart" @cloesCart="openCart = false" />
   </div>
 </template>
 
 <script lang="ts" setup>
+import Cart_index from '../layouts/home/cart/cart_index.vue'
 import Carousel_Home from '../components/carousel_home.vue'
 import Footer_Home from '../components/footer_home.vue'
 import router from '@/router';
@@ -57,6 +73,10 @@ import { RouterView } from 'vue-router';
 import mainbody from '../layouts/home/mainbody.vue'
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import Google_map from '@/components/google_map.vue';
+import { useAuthService } from '@/services/auth.service';
+const { isAuthenticated } = useAuthService();
+
+const openCart = ref(false);
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
 })

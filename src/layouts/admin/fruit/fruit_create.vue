@@ -36,6 +36,11 @@
                             <v-select v-model="categoriesId" label="Chọn thông tin" :items="options"
                                 item-title="categoriesName" item-value="categoriesId"></v-select>
                         </v-col>
+                        <v-col cols="6">
+                            <div class="text-subtitle-1 my-2 text-medium-emphasis">Chi nhánh</div>
+                            <v-select v-model="storeId" label="Chọn thông tin" :items="stores" item-title="storeName"
+                                item-value="storeId"></v-select>
+                        </v-col>
                         <v-col cols="12">
                             <div class="text-subtitle-1 my-2 text-medium-emphasis">Mô tả chi tiết</div>
                             <v-textarea v-model="fruitDescription" clearable placeholder="Nhập thông tin"></v-textarea>
@@ -57,6 +62,8 @@ import { showErrors, showSuccessNotification } from "@/common/helpers";
 import { useCategory } from "@/services/categoty.service";
 import { useFruit } from "@/services/fruit.service";
 import { defineProps, defineEmits, ref, onMounted, computed } from "vue";
+import { useStore } from '@/services/store.service';
+const { fetchStores } = useStore();
 
 const { createFruit } = useFruit();
 const props = defineProps(['dialog']);
@@ -70,8 +77,12 @@ const fruitPrice = ref('');
 const discount = ref<number>(0);
 const priceDiscount = ref<any>('');
 const categoriesId = ref('');
+const storeId = ref('');
+
 const { fetchCategories } = useCategory();
 const options = ref<any | undefined>([]);
+const stores = ref<any | undefined>([]);
+
 const handleDiscountInput = (event: InputEvent) => {
     const inputValue = parseInt((event.target as HTMLInputElement).value, 10);
     if (inputValue > 100) {
@@ -100,6 +111,7 @@ const saveData = async () => {
     formData.append('fruitId', '0');
     formData.append('discount', discount.value.toString());
     formData.append('categoriesId', categoriesId.value);
+    formData.append('storeId', storeId.value);
     if (file.value !== null) {
         formData.append('fileImg', file.value);
     }
@@ -114,10 +126,20 @@ const saveData = async () => {
     }
     emit('loadData');
     emit('close');
+    fruitName.value = '';
+    fruitDescription.value = '';
+    fruitQuantity.value = '';
+    fruitPrice.value = '';
+    discount.value = 0;
+    categoriesId.value = '';
+    storeId.value = '';
+    file.value = null;
 }
 const loadData = async () => {
     const res = await fetchCategories();
     options.value = res?.items;
+    const data = await fetchStores();
+    stores.value = data?.items;
 }
 onMounted(async () => {
     loadData();
