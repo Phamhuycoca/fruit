@@ -1,28 +1,44 @@
 <template>
-    <div style="min-height: 100vh;height:100%;" class="px-10 mt-10">
-        <v-row>
-            <v-col cols="3">
-                <v-card style="min-width: 400px;width: 400px;border: 1px solid #ccc;border-radius: 5px;" variant="text">
-                    <v-card-title class="text-center">
-                        Danh mục
-                    </v-card-title>
-                    <v-card-item>
-                        <v-text-field @change="searchData()" v-model="search" density="compact"
-                            placeholder="Nhập thông tin" variant="solo-filled" append-inner-icon="mdi-magnify">
+    <div style="min-height: 100vh;height:100%;">
+        <v-row class="mt-5">
+            <v-col cols="4">
+                <div style="display:flex;align-items: center;" class="mx-2">
+                    <v-card style="min-width: 400px;width: 400px;" variant="text">
+                        <v-card-item>
+                            <v-text-field @change="searchData()" v-model="search" density="compact"
+                                placeholder="Nhập thông tin" variant="solo-filled" append-inner-icon="mdi-magnify">
 
-                        </v-text-field>
-                        <v-select density="compact" label="Chọn danh mục" v-model="categoryId" :items="categories"
-                            item-title="categoriesName" item-value="categoriesId" variant="solo-filled"></v-select>
-                        <v-select density="compact" v-model="price" label="Chọn giá" item-title="text"
-                            item-value="value" :items="prices" variant="solo-filled"></v-select>
-                        <v-select density="compact" v-model="sale" label="Giảm giá" item-title="text" item-value="value"
-                            :items="sales" variant="solo-filled"></v-select>
-                    </v-card-item>
-                </v-card>
+                            </v-text-field>
+                            <v-select density="compact" label="Chọn danh mục" v-model="categoryId" :items="categories"
+                                item-title="categoriesName" item-value="categoriesId" variant="solo-filled"></v-select>
+                            <v-select density="compact" v-model="price" label="Chọn giá" item-title="text"
+                                item-value="value" :items="prices" variant="solo-filled"></v-select>
+                            <v-select density="compact" v-model="sale" label="Giảm giá" item-title="text"
+                                item-value="value" :items="sales" variant="solo-filled"></v-select>
+                        </v-card-item>
+                    </v-card>
+                </div>
+                <div style="display:flex;align-items: center;">
+                    <v-icon class="ma-4" color="success" size="large">mdi-storefront-outline</v-icon>
+                    <span style="font-size: 24px;line-height: 24px;">{{ store.storeName }}</span>
+                </div>
+                <div style="display:flex;align-items: center;">
+                    <v-icon class="ma-4" color="success" size="large">mdi-map-marker-outline</v-icon>
+                    <span style="font-size: 16px;line-height: 24px;">{{ store.storeAddress }}</span>
+                </div>
+                <div style="display:flex;align-items: center;">
+                    <v-icon class="ma-4" color="success" size="large">mdi-phone</v-icon>
+                    <span style="font-size: 16px;line-height: 24px;">{{ store.storePhone }}</span>
+                </div>
             </v-col>
-            <v-col cols="9">
+            <v-col cols="8">
+                <!-- <v-row class="mx-2">
+                    <v-col cols="4" v-for="item in 6" :key="item">
+                        <v-card>{{ item }}</v-card>
+                    </v-col>
+                </v-row> -->
                 <v-row>
-                    <v-col cols="4" v-for="(item, index) in fruits" :key="index">
+                    <v-col cols="4" v-for="(item, index) in products" :key="index">
                         <v-card style="max-width: 350px;width: 100%;border-radius: 5px;min-height:300px;height: 100%;"
                             hover variant="flat">
                             <v-card-item>
@@ -81,51 +97,34 @@
 
                     </v-col>
                 </v-row>
-                <div class="text-center ma-10">
-                    <v-btn variant="outlined" color="primary">
-                        Xem thêm</v-btn>
-                    <v-pagination class="ma-10" :length="4" rounded="circle"></v-pagination>
-                </div>
             </v-col>
         </v-row>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref, watch } from 'vue';
-import { useCategory } from "@/services/categoty.service";
-import { useFruit } from '@/services/fruit.service';
-const { fetchFruits, searchGetAllProducts, fetchGetAllProducts } = useFruit();
-import { DEFAULT_COMMON_LIST_QUERY, DEFAULT_COMMON_LIST_QUERY_PRODUCTS } from '@/common/constants';
-import { useAuthService } from '@/services/auth.service';
+import { DEFAULT_COMMON_LIST_QUERY_PRODUCTS } from '@/common/constants';
 import { formatNumberWithCommas, showErrorNotification } from '@/common/helpers';
-
-const { fetchCategories } = useCategory();
-const fruits = ref<any | undefined>([]);
-const totalItems = ref<number | undefined>(0);
+import router from '@/router';
+import { useAuthService } from '@/services/auth.service';
+import { useCategory } from '@/services/categoty.service';
+import { useFruit } from '@/services/fruit.service';
+import { useStore } from '@/services/store.service';
+import { onMounted, reactive, ref, watch } from 'vue';
+const store = ref<any | ''>('');
+const products = ref<any | undefined>([]);
+const { getStore } = useStore();
+const { fetchProductByStore, searchProductByStore } = useFruit();
 const { isAuthenticated } = useAuthService();
+const { fetchCategories } = useCategory();
 const page = ref(1);
 const price = ref('');
 const sale = ref('');
 const categoryId = ref('');
 const search = ref('');
-
-const show = ref(Array(fruits.value.length).fill(false));
-const toggleDescription = (index: number) => {
-    show.value[index] = !show.value[index];
-};
-const loadData = async () => {
-    const response = await fetchGetAllProducts();
-    fruits.value = response?.items;
-}
-const byNow = () => {
-    if (isAuthenticated.value) {
-        alert('Ok');
-    } else {
-        showErrorNotification('Vui lòng đăng nhập');
-    }
-}
+const show = ref(Array(products.value.length).fill(false));
 const categories = ref<any | undefined>([]);
+const idRoute = ref<any | ''>('');
 const prices = reactive([
     { value: 'Từ cao đến thấp', text: 'Từ cao đến thấp' },
     { value: 'Từ thấp đến cao', text: 'Từ thấp đến cao' },
@@ -134,40 +133,59 @@ const sales = reactive([
     { value: 'Đang giảm giá', text: 'Đang giảm giá' },
     { value: 'Không giảm giá', text: 'Không giảm giá' },
 ])
-watch(price, (newval) => {
-    DEFAULT_COMMON_LIST_QUERY_PRODUCTS.price = newval;
-    loadData();
-});
+watch
+    (price, (newval) => {
+        DEFAULT_COMMON_LIST_QUERY_PRODUCTS.price = newval;
+        loadAllProducts(idRoute.value);
+    });
 watch(sale, (newval) => {
     DEFAULT_COMMON_LIST_QUERY_PRODUCTS.sale = newval;
-    loadData();
+    loadAllProducts(idRoute.value);
 });
 watch(categoryId, (newval) => {
     DEFAULT_COMMON_LIST_QUERY_PRODUCTS.categoriesId = newval;
-    loadData();
+    loadAllProducts(idRoute.value);
 });
 watch(search, (newval, oldval) => {
     if (newval === '') {
         page.value = 1;
     }
 })
+const byNow = () => {
+    if (isAuthenticated.value) {
+        alert('Ok');
+    } else {
+        alert('ko')
+    }
+}
+const toggleDescription = (index: number) => {
+    show.value[index] = !show.value[index];
+};
+const loadAllProducts = async (id: any) => {
+    const res = await fetchProductByStore(id);
+    products.value = res?.items;
+    console.log(res?.items);
+}
 const searchData = async () => {
     DEFAULT_COMMON_LIST_QUERY_PRODUCTS.keyword = search.value;
     DEFAULT_COMMON_LIST_QUERY_PRODUCTS.page = 1
-    const data = await searchGetAllProducts();
-    fruits.value = data?.items;
+    const data = await searchProductByStore(idRoute.value);
+    products.value = data?.items;
 }
 onMounted(async () => {
+    const id = router.currentRoute.value.params.id;
     DEFAULT_COMMON_LIST_QUERY_PRODUCTS.keyword = '';
     DEFAULT_COMMON_LIST_QUERY_PRODUCTS.page = 1;
     DEFAULT_COMMON_LIST_QUERY_PRODUCTS.limit = 12;
     DEFAULT_COMMON_LIST_QUERY_PRODUCTS.price = '';
     DEFAULT_COMMON_LIST_QUERY_PRODUCTS.categoriesId = '';
     DEFAULT_COMMON_LIST_QUERY_PRODUCTS.sale = '';
+    const res = await getStore(id);
+    store.value = res.data;
+    await loadAllProducts(res.data.storeId);
     const category = await fetchCategories();
     categories.value = category?.items;
-    loadData();
-
+    idRoute.value = id;
 })
 </script>
 

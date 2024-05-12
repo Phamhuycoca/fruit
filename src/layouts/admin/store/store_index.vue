@@ -27,7 +27,10 @@
                             Vĩ độ
                         </th>
                         <th class=" text-left">
-                            Trụ sở
+                            Chi nhánh
+                        </th>
+                        <th class=" text-left">
+                            Số điện thoại của chi nhánh
                         </th>
                         <th class=" text-center">
                             Action
@@ -42,6 +45,7 @@
                         <td>{{ item.lat }}</td>
                         <td>{{ item.lng }}</td>
                         <td>{{ item.storeType }}</td>
+                        <td>{{ item.storePhone }}</td>
                         <td class="text-center">
                             <div class="d-flex align-center justify-center">
                                 <v-btn icon="mdi-pencil" size="small" class="ma-1" color="primary"

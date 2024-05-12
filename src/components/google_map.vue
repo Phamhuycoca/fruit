@@ -3,7 +3,9 @@
         <GMapMarker v-for="(marker, index) in markers" :key="index" :position="marker.position" :clickable="true"
             :draggable="true" @click="openMarker(marker.id)">
             <GMapInfoWindow :closeclick="true" @closeclick="openMarker(null)" :opened="openedMarkerID === marker.id">
-                <div>{{ marker.name }} </div>
+                <div class="m-2">
+                    <router-link :to="`/stores/${marker.id}`"> {{ marker.name }}</router-link>
+                </div>
                 <div>Chi nhánh thứ {{ marker.id }} </div>
             </GMapInfoWindow>
         </GMapMarker>

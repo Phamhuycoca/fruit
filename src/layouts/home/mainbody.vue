@@ -127,9 +127,10 @@ import { useCategory } from '@/services/categoty.service';
 import { onMounted, ref } from 'vue';
 const { fetchCategories } = useCategory();
 import { useFruit } from '@/services/fruit.service';
-import { formatNumberWithCommas, showErrors, showSuccessNotification } from '@/common/helpers';
+import { formatNumberWithCommas, showErrorNotification, showErrors, showSuccessNotification } from '@/common/helpers';
 import { useAuthService } from '@/services/auth.service';
 import { useCart } from '@/services/cart.service';
+import { DEFAULT_COMMON_LIST_QUERY } from '@/common/constants';
 const { fetchFruits } = useFruit();
 const categories = ref<any | undefined>([]);
 const fruits = ref<any | undefined>([]);
@@ -169,11 +170,14 @@ const addToCart = async (id: string) => {
             }
         }
     } else {
-        alert('ko')
+        showErrorNotification('Hãy đăng nhập để đặt mua');
     }
 }
 onMounted(async () => {
-    loadData();
+    DEFAULT_COMMON_LIST_QUERY.keyword = '';
+    DEFAULT_COMMON_LIST_QUERY.limit = 10;
+    DEFAULT_COMMON_LIST_QUERY.page = 1;
+    await loadData();
 })
 
 </script>

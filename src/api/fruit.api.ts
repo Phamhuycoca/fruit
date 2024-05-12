@@ -23,7 +23,13 @@ class fruitApiService extends ApiService {
     return this.client.get(`${this.baseUrl}/GetAllProducts`, {
         params: DEFAULT_COMMON_LIST_QUERY_PRODUCTS
         }
+    );    
+  }
+  productByStore(DEFAULT_COMMON_LIST_QUERY_PRODUCTS:any,id:any):Promise<any> {
+    return this.client.get(`${this.baseUrl}/ProductByStore/${id}`, {
+        params: DEFAULT_COMMON_LIST_QUERY_PRODUCTS
+        }
     );
-}
+  }
 }
 export const fruitApi = new fruitApiService({ baseUrl: "/Fruit" }, axiosInstance);

@@ -18,8 +18,12 @@
                             <v-text-field v-model="lat" placeholder="Nhập vĩ độ"></v-text-field>
                         </v-col>
                         <v-col cols="6">
-                            <v-select clearable label="Select" :items="['Trụ sở chính', 'Chi nhánh phụ']"
-                                v-model="storeType" variant="underlined"></v-select>
+                            <!-- <v-select clearable label="Select" :items="['Trụ sở chính', 'Chi nhánh phụ']"
+                                v-model="storeType" variant="underlined"></v-select> -->
+                            <v-text-field v-model="storeType" placeholder="Chi nhánh"></v-text-field>
+                        </v-col>
+                        <v-col cols="6">
+                            <v-text-field v-model="storePhone" placeholder="Số điện thoại chi nhánh"></v-text-field>
                         </v-col>
                     </v-row>
                 </v-card-item>
@@ -46,6 +50,7 @@ const lat = ref('');
 const lng = ref('');
 const storeId = ref('');
 const storeType = ref('');
+const storePhone = ref('');
 
 watch(() => props.currentItem, () => {
     storeName.value = props.currentItem.storeName;
@@ -53,6 +58,8 @@ watch(() => props.currentItem, () => {
     lat.value = props.currentItem.lat;
     lng.value = props.currentItem.lng;
     storeId.value = props.currentItem.storeId;
+    storeType.value = props.currentItem.storeType;
+    storePhone.value = props.currentItem.storePhone;
 })
 const saveData = async () => {
     const formData = new FormData();
@@ -62,6 +69,7 @@ const saveData = async () => {
     formData.append('lng', lng.value);
     formData.append('storeId', storeId.value);
     formData.append('storeType', storeType.value);
+    formData.append('storePhone', storePhone.value);
     const res = await updateStore(formData, storeId);
     if (res.success) {
         showSuccessNotification(res.message)

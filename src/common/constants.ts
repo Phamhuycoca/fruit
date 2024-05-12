@@ -7,6 +7,7 @@ export enum PageName {
   FORBIDDEN_PAGE = 'forbidden_page',
   FRUITDETAIL_PAGE = 'fruit_detail_page',
   PRODUCTS_PAGE = 'product_page',
+  STORE_PAGE = 'store_page',
 }
 
 export enum SupportLanguage {

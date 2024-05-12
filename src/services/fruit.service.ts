@@ -115,6 +115,48 @@ export const useFruit = () => {
       console.error("Error Fetching:", error);
     } 
   };
+
+  const fetchProductByStore = async (id:any) => {
+    try {
+      const res = await fruitApi.productByStore(DEFAULT_COMMON_LIST_QUERY_PRODUCTS,id);
+      if (res.errors !== undefined) {
+        showErrors(res.errors);
+    }
+      if (res.success) {
+        return {
+          items: res.items,
+          totalItems: res.totalItems,
+        };
+      }
+      return {
+        items: [],
+        totalItems: 0,
+      };
+    } catch (error) {
+      console.error("Error Fetching:", error);
+    } 
+  };
+ 
+  const searchProductByStore = async (id:any) => {
+    try {
+      const res = await fruitApi.productByStore(DEFAULT_COMMON_LIST_QUERY_PRODUCTS,id);
+      if (res.errors !== undefined) {
+        showErrors(res.errors);
+    }
+      if (res.success) {
+        return {
+          items: res.items,
+          totalItems: res.totalItems,
+        };
+      }
+      return {
+        items: [],
+        totalItems: 0,
+      };
+    } catch (error) {
+      console.error("Error Fetching:", error);
+    } 
+  };
   return {
     query,
     createFruit,
@@ -124,6 +166,8 @@ export const useFruit = () => {
     searchFruits,
     getFruit,
     fetchGetAllProducts,
-    searchGetAllProducts
+    searchGetAllProducts,
+    fetchProductByStore,
+    searchProductByStore
   };
 };

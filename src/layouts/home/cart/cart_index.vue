@@ -10,7 +10,7 @@
                 <div v-if="carts.length > 0">
                     <div class="text-center" style="font-size: 24px;margin-top: 10px;">Giỏ hàng của bạn</div>
                     <div v-for="item in carts" :key="item">
-                        <v-card class="mx-3">
+                        <v-card class="mx-3 my-2" variant="text" hover>
                             <v-card-item>
                                 <div style="display: flex;align-items: center;">
                                     <v-checkbox style="display: flex;align-items: center;"
@@ -19,7 +19,12 @@
                                     <div
                                         style="width: 380px;display: flex;align-items: center;justify-content: space-evenly;">
                                         <span class="d-inline-block text-truncate" style="max-width: 150px;">{{
-                                            item.fruitName }}</span>
+                                            item.fruitName }}
+                                            <v-tooltip activator="parent" location="top">
+                                                {{
+                                                    item.fruitName }}
+                                            </v-tooltip>
+                                        </span>
                                         <div>
                                             <v-btn color="orange-lighten-2" variant="text">-</v-btn>
                                             <span>{{ item.quantity }}</span>
@@ -33,6 +38,10 @@
                     <div style="position: absolute;left: 0px;font-size: 20px;z-index: 1000;bottom: 0px;margin: 10px;">
                         <v-btn prepend-icon="mdi-cart" color="success" v-if="checkbox">Thanh toán</v-btn>
                         <v-btn prepend-icon="mdi-cart" color="success" v-else>Thanh toán tất cả</v-btn>
+                    </div>
+                    <div style="position: absolute;right: 0px;font-size: 20px;z-index: 1000;bottom: 0px;margin: 10px;">
+                        <v-btn prepend-icon="mdi-cart" color="error" v-if="checkbox">Xóa tất cả</v-btn>
+                        <v-btn prepend-icon="mdi-cart" color="error" v-else>Xóa</v-btn>
                     </div>
                 </div>
                 <div v-else>
@@ -49,9 +58,12 @@
 </template>
 
 <script lang="ts" setup>
+import { useAuthService } from "@/services/auth.service";
 import { useCart } from "@/services/cart.service";
 import { defineProps, defineEmits, onMounted, ref, watch } from "vue";
 const props = defineProps(['openCart']);
+const { isAuthenticated } = useAuthService();
+
 const emit = defineEmits();
 const { fetchCart } = useCart();
 const checkbox = ref(false);
@@ -69,7 +81,9 @@ const loadData = async () => {
     carts.value = res?.items;
 }
 onMounted(async () => {
-    await loadData();
+    if (isAuthenticated.value) {
+        await loadData();
+    }
 })
 </script>
 

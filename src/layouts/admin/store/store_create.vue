@@ -18,8 +18,10 @@
                             <v-text-field v-model="lat" placeholder="Nhập vĩ độ"></v-text-field>
                         </v-col>
                         <v-col cols="6">
-                            <v-select clearable label="Select" :items="['Trụ sở chính', 'Chi nhánh phụ']"
-                                v-model="storeType" variant="underlined"></v-select>
+                            <v-text-field v-model="storeType" placeholder="Chi nhánh"></v-text-field>
+                        </v-col>
+                        <v-col cols="6">
+                            <v-text-field v-model="storePhone" placeholder="Số điện thoại chi nhánh"></v-text-field>
                         </v-col>
                     </v-row>
                 </v-card-item>
@@ -45,6 +47,7 @@ const storeAddress = ref('');
 const lat = ref('');
 const lng = ref('');
 const storeType = ref('');
+const storePhone = ref('');
 
 const saveData = async () => {
     const formData = new FormData();
@@ -53,6 +56,7 @@ const saveData = async () => {
     formData.append('lat', lat.value);
     formData.append('lng', lng.value);
     formData.append('storeType', storeType.value);
+    formData.append('storePhone', storePhone.value);
     const res = await createStore(formData);
     if (res.success) {
         showSuccessNotification(res.message)
