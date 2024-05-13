@@ -8,6 +8,7 @@ export enum PageName {
   FRUITDETAIL_PAGE = 'fruit_detail_page',
   PRODUCTS_PAGE = 'product_page',
   STORE_PAGE = 'store_page',
+  PAYMENTS_PAGE = 'payments_page',
 }
 
 export enum SupportLanguage {

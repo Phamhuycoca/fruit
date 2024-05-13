@@ -40,14 +40,12 @@
                         </v-card>
                     </div>
                     <div style="position: absolute;left: 0px;font-size: 20px;z-index: 1000;bottom: 0px;margin: 10px;">
-                        <v-btn prepend-icon="mdi-cart" color="success" v-if="checkbox" @click="ThanhToan">Thanh
+                        <v-btn prepend-icon="mdi-cart" color="success" v-if="danhSachDaChon" @click="ThanhToan">Thanh
                             toán</v-btn>
-                        <v-btn prepend-icon="mdi-cart" color="success" v-else>Thanh toán tất cả</v-btn>
                     </div>
-                    <!-- <div style="position: absolute;right: 0px;font-size: 20px;z-index: 1000;bottom: 0px;margin: 10px;">
-                        <v-btn prepend-icon="mdi-cart" color="error" v-if="checkbox">Xóa tất cả</v-btn>
-                        <v-btn prepend-icon="mdi-cart" color="error" v-else>Xóa</v-btn>
-                    </div> -->
+                    <div style="position: absolute;right: 0px;font-size: 20px;z-index: 1000;bottom: 0px;margin: 10px;">
+                        <v-btn prepend-icon="mdi-cart" color="success">Thanh toán tất cả</v-btn>
+                    </div>
                 </div>
                 <div v-else>
                     <div style="height: 800px;display: flex;justify-content: center;align-items: center;">
@@ -63,6 +61,8 @@
 </template>
 
 <script lang="ts" setup>
+import { showSuccessNotification, showWarningsNotification } from "@/common/helpers";
+import router from "@/router";
 import { useAuthService } from "@/services/auth.service";
 import { useCart, } from "@/services/cart.service";
 import { defineProps, defineEmits, onMounted, ref, watch } from "vue";
@@ -74,6 +74,8 @@ const { fetchCart, tanggiamCart, deleteCart } = useCart();
 // const checkbox = ref(false);
 const carts = ref<any | undefined>([]);
 const checkbox = ref(Array(carts.value.length).fill(false));
+const danhSachDaChon = <any | undefined>([]);
+
 const toggleDescription = (index: number) => {
     checkbox.value[index] = !checkbox.value[index];
 };
@@ -92,10 +94,12 @@ const deleteCartItem = async (id: any) => {
     }
 }
 const TangQuantity = async (item: any, quantity: number) => {
+    console.log(item);
     const quantityCart = quantity += 1;
     const formData = new FormData();
     formData.append('cartId', item.cartId);
     formData.append('fruitId', item.fruitId);
+    formData.append('storeId', item.storeId);
     formData.append('quantity', quantityCart.toString());
     await tanggiamCart(formData);
     loadData();
@@ -106,19 +110,24 @@ const GiamQuantity = async (item: any, quantity: number) => {
         const formData = new FormData();
         formData.append('cartId', item.cartId);
         formData.append('fruitId', item.fruitId);
+        formData.append('storeId', item.storeId);
         formData.append('quantity', quantityCart.toString());
         await tanggiamCart(formData);
         loadData();
     }
 }
 const ThanhToan = () => {
-    const danhSachDaChon = <any | undefined>([]);
     checkbox.value.forEach((isChecked, index) => {
         if (isChecked) {
             danhSachDaChon.push(carts.value[index]);
         }
     });
-    console.log(danhSachDaChon);
+    if (danhSachDaChon.length > 0) {
+        emit('cloesCart');
+        window.location.href = '/payments_index'
+    } else {
+        showWarningsNotification('Vui lòng chọn sản phẩm cần thanh toán');
+    }
 }
 const loadData = async () => {
     const res = await fetchCart();

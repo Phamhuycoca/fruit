@@ -156,7 +156,6 @@ const byNow = () => {
 }
 const addToCart = async (item: any) => {
     if (isAuthenticated.value) {
-        alert(item.fruitId);
         const formData = new FormData();
         formData.append('fruitId', item.fruitId);
         formData.append('quantity', '1');
