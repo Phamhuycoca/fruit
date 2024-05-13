@@ -94,7 +94,7 @@
                         <v-btn size="small" @click="byNow" color="primary" variant="outlined">
                             <v-icon>mdi-credit-card-outline</v-icon>
                             Mua ngay</v-btn>
-                        <v-btn size="small" @click="addToCart(item.fruitId)" color="red" variant="text">
+                        <v-btn size="small" @click="addToCart(item)" color="red" variant="text">
                             <v-icon>
                                 mdi-cart-variant
                             </v-icon>
@@ -154,12 +154,13 @@ const byNow = () => {
         alert('ko')
     }
 }
-const addToCart = async (id: string) => {
+const addToCart = async (item: any) => {
     if (isAuthenticated.value) {
-        alert(id);
+        alert(item.fruitId);
         const formData = new FormData();
-        formData.append('fruitId', id);
+        formData.append('fruitId', item.fruitId);
         formData.append('quantity', '1');
+        formData.append('storeId', item.storeId);
         const res = await createCart(formData);
         if (res.success) {
             showSuccessNotification(res.message)

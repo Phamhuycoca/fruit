@@ -15,5 +15,8 @@ class cartApiService extends ApiService {
   deleteData(id: any): Promise<any> {
    return this.client.delete(`${this.baseUrl}/${id}`);
   }
+  tanggiamCart(data:any): Promise<any> {
+    return this.client.patch(`${this.baseUrl}/TangGiamCartItem`, data);
+  }
 }
 export const cartApi = new cartApiService({ baseUrl: "/Cart" }, axiosInstance);

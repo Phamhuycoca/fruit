@@ -73,6 +73,13 @@ export const useCart = () => {
     }
   };
 
+  const tanggiamCart=async(data:any)=>{
+    try{
+      return await cartApi.tanggiamCart(data);
+    }catch (error) {
+      console.error("Error tanggiamCart:", error);
+    }
+  };
  
   return {
     query,
@@ -82,5 +89,6 @@ export const useCart = () => {
     updateCart,
     getCart,
     deleteCart,
+    tanggiamCart
   };
 };
