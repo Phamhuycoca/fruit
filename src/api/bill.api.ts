@@ -4,7 +4,7 @@ import axiosInstance from "@/plugins/axios";
 
 class billApiService extends ApiService {
   createData(data: any): Promise<any> {
-    return this.client.post(`${this.baseUrl}`, data);
+    return this.client.post(`${this.baseUrl}/Pay`, data);
   }
   updateData(data: any, id: any): Promise<any> {
     return this.client.patch(`${this.baseUrl}/${id}`, data);

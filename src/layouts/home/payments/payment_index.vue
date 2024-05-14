@@ -22,7 +22,7 @@
                             item-title="text" item-value="value"></v-select>
                     </v-col>
                     <v-col cols="12" style="display: flex; justify-content: center;">
-                        <v-btn>Xác nhận</v-btn>
+                        <v-btn @click="payCart">Xác nhận</v-btn>
                     </v-col>
                 </v-row>
             </v-col>
@@ -54,11 +54,14 @@
 </template>
 
 <script lang="ts" setup>
+import { showSuccessNotification } from '@/common/helpers';
+import { useBill } from '@/services/bill.service';
 import { usePayments } from '@/services/payments.service';
 import { useReloadStore } from '@/stores/reload';
 import { computed, onMounted, reactive, ref } from 'vue';
 const { fetchCartItems, deleteToPayment } = usePayments();
 const reload = useReloadStore();
+const { createBill } = useBill();
 
 const total_amount = ref('');
 const fullName = ref('');
@@ -85,13 +88,20 @@ const deleteItem = async (id: any) => {
     await deleteToPayment(id);
     loadData();
 }
-const payCart = () => {
+const payCart = async () => {
     const formData = new FormData();
     formData.append('fullName', fullName.value);
     formData.append('address', address.value);
     formData.append('payments', payments.value);
     formData.append('phone', phone.value);
     formData.append('total_amount', total_amount.value);
+    const res = await createBill(formData);
+    if (res.success) {
+        showSuccessNotification(res.message);
+        setTimeout(() => {
+            window.location.href = res.data;
+        }, 3000)
+    }
 }
 onMounted(() => {
     loadData();
