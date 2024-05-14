@@ -65,17 +65,19 @@ import { showSuccessNotification, showWarningsNotification } from "@/common/help
 import router from "@/router";
 import { useAuthService } from "@/services/auth.service";
 import { useCart, } from "@/services/cart.service";
+import { usePayments } from "@/services/payments.service";
+import { useReloadStore } from "@/stores/reload";
 import { defineProps, defineEmits, onMounted, ref, watch } from "vue";
+const reload = useReloadStore();
 const props = defineProps(['openCart']);
 const { isAuthenticated } = useAuthService();
-
+const { addToPayment } = usePayments();
 const emit = defineEmits();
 const { fetchCart, tanggiamCart, deleteCart } = useCart();
 // const checkbox = ref(false);
 const carts = ref<any | undefined>([]);
 const checkbox = ref(Array(carts.value.length).fill(false));
 const danhSachDaChon = <any | undefined>([]);
-
 const toggleDescription = (index: number) => {
     checkbox.value[index] = !checkbox.value[index];
 };
@@ -94,7 +96,6 @@ const deleteCartItem = async (id: any) => {
     }
 }
 const TangQuantity = async (item: any, quantity: number) => {
-    console.log(item);
     const quantityCart = quantity += 1;
     const formData = new FormData();
     formData.append('cartId', item.cartId);
@@ -116,15 +117,26 @@ const GiamQuantity = async (item: any, quantity: number) => {
         loadData();
     }
 }
+
 const ThanhToan = () => {
     checkbox.value.forEach((isChecked, index) => {
         if (isChecked) {
             danhSachDaChon.push(carts.value[index]);
         }
     });
+
     if (danhSachDaChon.length > 0) {
-        emit('cloesCart');
+        danhSachDaChon.forEach((item: any) => {
+            const formData = new FormData();
+            formData.append('cartId', item.cartId);
+            formData.append('fruitId', item.fruitId);
+            formData.append('quantity', item.quantity);
+            formData.append('userId', item.userId);
+            formData.append('storeId', item.storeId);
+            const res = addToPayment(formData);
+        })
         window.location.href = '/payments_index'
+        emit('cloesCart');
     } else {
         showWarningsNotification('Vui lòng chọn sản phẩm cần thanh toán');
     }

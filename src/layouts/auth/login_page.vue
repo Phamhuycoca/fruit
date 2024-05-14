@@ -47,8 +47,6 @@ const onSubmit = async () => {
 
     const emailValue = email.value || '';
     const passwordValue = password.value || '';
-    alert(emailValue);
-
     const res = await login({ email: emailValue, password: passwordValue });
     if (res.success) {
         setTimeout(() => {
