@@ -26,7 +26,7 @@
                     </v-col>
                 </v-row>
             </v-col>
-            <v-col cols="6">
+            <v-col cols="6" v-if="cartItems.length > 0">
                 <h3 class="text-center mt-10">Danh sách sản phẩm</h3>
                 <v-row v-for="item in cartItems" :key="item">
                     <v-col cols="12" style="display: flex;justify-content: center;">
@@ -49,6 +49,10 @@
                 </v-row>
                 <v-pagination :length="8" style="display: flex;justify-content: center;"></v-pagination>
             </v-col>
+            <v-col cols="6" v-else>
+                <h3 class="text-center mt-10">Danh sách trống</h3>
+            </v-col>
+
         </v-row>
     </div>
 </template>
@@ -98,10 +102,19 @@ const payCart = async () => {
     const res = await createBill(formData);
     if (res.success) {
         showSuccessNotification(res.message);
-        setTimeout(() => {
-            window.location.href = res.data;
-        }, 3000)
+        loadData();
+        address.value = '';
+        fullName.value = '';
+        total_amount.value = '';
+        payments.value = '';
+        phone.value = '';
+        if (payments.value === 'Thanh toán bằng VNPay') {
+            setTimeout(() => {
+                window.location.href = res.data;
+            }, 3000)
+        }
     }
+
 }
 onMounted(() => {
     loadData();

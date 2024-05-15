@@ -35,6 +35,11 @@ const routes: Array<RouteRecordRaw> = [
           component: () => import('../layouts/home/payments/payment_index.vue')
         },
         {
+          path: '/bill_index',
+          name: PageName.BILLS_PAGE,
+          component: () => import('../layouts/home/bill/bill_index.vue')
+        },
+        {
           path: '/stores/:id',
           name: PageName.STORE_PAGE,
           component: () => import('../layouts/home/stores/store_index.vue')

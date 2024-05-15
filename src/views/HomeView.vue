@@ -30,7 +30,7 @@
                 <v-list-item>
                   <v-list-item-title style="height: 40px;">Xem thông tin</v-list-item-title>
                   <v-list-item-title style="height: 40px;" @click="openCart = true">Giỏ hàng của bạn</v-list-item-title>
-                  <v-list-item-title style="height: 40px;">Danh sách đơn hàng</v-list-item-title>
+                  <v-list-item-title style="height: 40px;" @click="Bill">Danh sách đơn hàng</v-list-item-title>
                   <v-list-item-title>Đăng xuất</v-list-item-title>
                 </v-list-item>
               </v-list>
@@ -80,6 +80,9 @@ const openCart = ref(false);
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
 })
+const Bill = () => {
+  window.location.href = '/bill_index'
+}
 const showScrollButton = ref(false);
 const handleScroll = () => {
   showScrollButton.value = window.scrollY > 100; // Adjust 1000 to your desired scroll threshold
