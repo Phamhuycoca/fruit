@@ -1,5 +1,7 @@
 <template>
-    <h1>Bill_index</h1>
+    <div>
+        a
+    </div>
 </template>
 
 <script lang="ts" setup>

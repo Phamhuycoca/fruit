@@ -24,6 +24,7 @@ export const useBill = () => {
       console.error("Error Fetching:", error);
     } 
   };
+
   const searchBills = async () => {
     try {
       const res = await billApi._getList<any>(query);
@@ -41,6 +42,7 @@ export const useBill = () => {
       console.error("Error Search:", error);
     } 
   };
+
   const createBill = async (data: any) => {
     try {
       return await billApi.createData(data);
@@ -73,7 +75,27 @@ export const useBill = () => {
     }
   };
 
- 
+  const fetchitemsStatus0 = async () => {
+    try {
+      const res = await billApi.itemsStatus0(query);
+      if (res.errors !== undefined) {
+        showErrors(res.errors);
+    }
+      if (res.success) {
+        return {
+          items: res.items,
+          totalItems: res.totalItems,
+        };
+      }
+      return {
+        items: [],
+        totalItems: 0,
+      };
+    } catch (error) {
+      console.error("Error Fetching:", error);
+    } 
+  };
+
   return {
     query,
     fetchBills,
@@ -81,6 +103,7 @@ export const useBill = () => {
     updateBill,
     deleteBill,
     getBill,
-    searchBills
+    searchBills,
+    fetchitemsStatus0
   };
 };

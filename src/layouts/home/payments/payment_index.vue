@@ -108,10 +108,10 @@ const payCart = async () => {
         total_amount.value = '';
         payments.value = '';
         phone.value = '';
-        if (payments.value === 'Thanh toán bằng VNPay') {
-            setTimeout(() => {
-                window.location.href = res.data;
-            }, 3000)
+        console.log(res.data.payments);
+        if (res.data.payments !== 'Thanh toán sau khi nhận hàng') {
+            // window.location.href = res.data;
+            window.open(res.data, '_blank');
         }
     }
 
