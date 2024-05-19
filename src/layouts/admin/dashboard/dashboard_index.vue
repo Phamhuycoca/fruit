@@ -11,12 +11,14 @@
                 <v-card class="ma-10">
                     <v-card-title>
                         Tổng số doanh thu
-
+                        {{ total.bill_count }}
                     </v-card-title>
                 </v-card>
                 <v-card class="ma-10">
                     <v-card-title>
                         Tổng số sản phẩm được bán
+                        {{ total.fruit_count }}
+
                     </v-card-title>
                 </v-card>
             </v-col>
@@ -50,7 +52,7 @@
                         </tr>
                     </tbody>
                 </v-table>
-                <v-btn>Duyệt tất cả</v-btn>
+                <v-btn @click="Status">Duyệt tất cả</v-btn>
             </v-col>
         </v-row>
     </div>
@@ -61,15 +63,28 @@ import store_dashboard from './store_dashboard.vue'
 import bill_dashboard from './bill_dashboard.vue'
 import { useBill } from '@/services/bill.service';
 import { onMounted, ref } from 'vue';
-const { fetchitemsStatus0 } = useBill();
+import { useDashboard } from '@/services/dashboard.service';
+import { showSuccessNotification } from '@/common/helpers';
+const { fetchitemsStatus0, updateStatus } = useBill();
+const { totalsDashboard } = useDashboard();
 const bills = ref<any | undefined>([]);
+const total = ref('');
 const fetchitemsStatus = async () => {
     const res = await fetchitemsStatus0();
     bills.value = res?.items;
     console.log(bills.value);
 }
+const Status = async () => {
+    const rs = await updateStatus();
+    if (rs.success) {
+        showSuccessNotification(rs.message)
+    }
+}
 onMounted(async () => {
     await fetchitemsStatus();
+    const res = await totalsDashboard();
+    total.value = res.data;
+    console.log(total.value);
 })
 </script>
 

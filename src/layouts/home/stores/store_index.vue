@@ -72,10 +72,10 @@
                                 </div>
                             </v-card-text>
                             <v-card-actions>
-                                <v-btn size="small" @click="byNow" color="primary" variant="outlined">
+                                <v-btn size="small" @click="showPay(item)" color="primary" variant="outlined">
                                     <v-icon>mdi-credit-card-outline</v-icon>
                                     Mua ngay</v-btn>
-                                <v-btn size="small" @click="byNow" color="red" variant="text">
+                                <v-btn size="small" @click="addToCart(item)" color="red" variant="text">
                                     <v-icon>
                                         mdi-cart-variant
                                     </v-icon>
@@ -97,14 +97,19 @@
 
                     </v-col>
                 </v-row>
+                <v-pagination v-model="page" :length="totalItems" class="my-4" rounded="circle"></v-pagination>
             </v-col>
         </v-row>
+        <pay_nowDialog :payNow="payNow" :currentItem="currentItem" @closePayNow="payNow = false" />
+
     </div>
 </template>
 
 <script lang="ts" setup>
+import pay_nowDialog from '@/layouts/home/pay_now/pay_now.vue';
+
 import { DEFAULT_COMMON_LIST_QUERY_PRODUCTS } from '@/common/constants';
-import { formatNumberWithCommas, showErrorNotification } from '@/common/helpers';
+import { formatNumberWithCommas, showErrorNotification, showErrors, showSuccessNotification } from '@/common/helpers';
 import router from '@/router';
 import { useAuthService } from '@/services/auth.service';
 import { useCategory } from '@/services/categoty.service';
@@ -118,6 +123,11 @@ const { fetchProductByStore, searchProductByStore } = useFruit();
 const { isAuthenticated } = useAuthService();
 const { fetchCategories } = useCategory();
 const page = ref(1);
+const totalItems = ref<number | undefined>(0);
+import { useCart } from '@/services/cart.service';
+const { createCart } = useCart();
+const payNow = ref(false);
+const currentItem = ref('');
 const price = ref('');
 const sale = ref('');
 const categoryId = ref('');
@@ -151,12 +161,33 @@ watch(search, (newval, oldval) => {
         page.value = 1;
     }
 })
-const byNow = () => {
+const addToCart = async (item: any) => {
     if (isAuthenticated.value) {
-        alert('Ok');
+        const formData = new FormData();
+        formData.append('fruitId', item.fruitId);
+        formData.append('quantity', '1');
+        formData.append('storeId', item.storeId);
+        const res = await createCart(formData);
+        if (res.success) {
+            showSuccessNotification(res.message)
+        }
+        else {
+            if (res.errors !== undefined) {
+                showErrors(res.errors);
+            }
+        }
     } else {
-        alert('ko')
+        showErrorNotification('Hãy đăng nhập để đặt mua');
     }
+}
+const showPay = (item: any) => {
+    if (isAuthenticated.value) {
+        payNow.value = true,
+            currentItem.value = item;
+    } else {
+        showErrorNotification('Hãy đăng nhập để đặt mua');
+    }
+
 }
 const toggleDescription = (index: number) => {
     show.value[index] = !show.value[index];
@@ -165,6 +196,9 @@ const loadAllProducts = async (id: any) => {
     const res = await fetchProductByStore(id);
     products.value = res?.items;
     console.log(res?.items);
+    if (res?.totalItems !== undefined) {
+        totalItems.value = Math.ceil(res?.totalItems / 9);
+    }
 }
 const searchData = async () => {
     DEFAULT_COMMON_LIST_QUERY_PRODUCTS.keyword = search.value;
@@ -174,14 +208,14 @@ const searchData = async () => {
 }
 onMounted(async () => {
     const id = router.currentRoute.value.params.id;
+    const res = await getStore(id);
+    store.value = res.data;
     DEFAULT_COMMON_LIST_QUERY_PRODUCTS.keyword = '';
     DEFAULT_COMMON_LIST_QUERY_PRODUCTS.page = 1;
-    DEFAULT_COMMON_LIST_QUERY_PRODUCTS.limit = 12;
+    DEFAULT_COMMON_LIST_QUERY_PRODUCTS.limit = 9;
     DEFAULT_COMMON_LIST_QUERY_PRODUCTS.price = '';
     DEFAULT_COMMON_LIST_QUERY_PRODUCTS.categoriesId = '';
     DEFAULT_COMMON_LIST_QUERY_PRODUCTS.sale = '';
-    const res = await getStore(id);
-    store.value = res.data;
     await loadAllProducts(res.data.storeId);
     const category = await fetchCategories();
     categories.value = category?.items;

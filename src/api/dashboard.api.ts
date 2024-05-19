@@ -9,5 +9,8 @@ class dashboardApiService extends ApiService {
     billDashboard(): Promise<any> {
         return this.client.get(`${this.baseUrl}/Bill_Dashboard`);
     }
+    totalsDashboard(): Promise<any> {
+        return this.client.get(`${this.baseUrl}/Totals`);
+    }
 }
 export const dashboardApi = new dashboardApiService({ baseUrl: "/Dashboard" }, axiosInstance);

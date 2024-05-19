@@ -91,7 +91,7 @@
                         </div>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn size="small" @click="byNow" color="primary" variant="outlined">
+                        <v-btn size="small" @click="showPay(item)" color="primary" variant="outlined">
                             <v-icon>mdi-credit-card-outline</v-icon>
                             Mua ngay</v-btn>
                         <v-btn size="small" @click="addToCart(item)" color="red" variant="text">
@@ -114,17 +114,19 @@
                 </v-card>
             </v-col>
         </v-row>
+        <pay_nowDialog :payNow="payNow" :currentItem="currentItem" @closePayNow="payNow = false" />
         <div class="text-center ma-10">
-            <!-- <v-pagination v-model="page" :length="4" rounded="circle"></v-pagination> -->
-            <v-btn variant="outlined" color="primary">
-                Xem thêm</v-btn>
+            <v-pagination v-model="page" :length="totalItems" class="my-4" rounded="circle"></v-pagination>
+            <!-- <v-btn variant="outlined" color="primary">
+                Xem thêm</v-btn> -->
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
+import pay_nowDialog from './pay_now/pay_now.vue';
 import { useCategory } from '@/services/categoty.service';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 const { fetchCategories } = useCategory();
 import { useFruit } from '@/services/fruit.service';
 import { formatNumberWithCommas, showErrorNotification, showErrors, showSuccessNotification } from '@/common/helpers';
@@ -137,15 +139,34 @@ const fruits = ref<any | undefined>([]);
 const { isAuthenticated } = useAuthService();
 const { createCart } = useCart();
 const page = ref(1);
+const totalItems = ref<number | undefined>(0);
+const payNow = ref(false);
+const currentItem = ref('');
 const show = ref(Array(fruits.value.length).fill(false));
 const toggleDescription = (index: number) => {
     show.value[index] = !show.value[index];
 };
+const showPay = (item: any) => {
+    if (isAuthenticated.value) {
+        payNow.value = true,
+            currentItem.value = item;
+    } else {
+        showErrorNotification('Hãy đăng nhập để đặt mua');
+    }
+
+}
+watch(page, (newVal) => {
+    DEFAULT_COMMON_LIST_QUERY.page = newVal
+    loadData()
+})
 const loadData = async () => {
     const res = await fetchCategories();
     categories.value = res?.items;
     const response = await fetchFruits();
     fruits.value = response?.items;
+    if (response?.totalItems !== undefined) {
+        totalItems.value = Math.ceil(response?.totalItems / 9);
+    }
 }
 const byNow = () => {
     if (isAuthenticated.value) {
@@ -175,7 +196,7 @@ const addToCart = async (item: any) => {
 }
 onMounted(async () => {
     DEFAULT_COMMON_LIST_QUERY.keyword = '';
-    DEFAULT_COMMON_LIST_QUERY.limit = 10;
+    DEFAULT_COMMON_LIST_QUERY.limit = 9;
     DEFAULT_COMMON_LIST_QUERY.page = 1;
     await loadData();
 })

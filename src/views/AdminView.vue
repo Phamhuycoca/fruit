@@ -30,12 +30,8 @@
             </template>
         </v-navigation-drawer>
 
-        <v-app-bar title="Dashboard" elevation="0">
-            <template v-slot:append>
-                <v-badge :content="56" floating class="mr-5 mt-2">
-                    <v-icon icon="$vuetify" size="x-large"></v-icon>
-                </v-badge>
-            </template>
+        <v-app-bar elevation="0">
+
         </v-app-bar>
 
         <v-main style="min-height: 100vh;background-color: #F5F5F5;">

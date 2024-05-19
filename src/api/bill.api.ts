@@ -7,6 +7,9 @@ class billApiService extends ApiService {
   createData(data: any): Promise<any> {
     return this.client.post(`${this.baseUrl}/Pay`, data);
   }
+  payNow(data: any): Promise<any> {
+    return this.client.post(`${this.baseUrl}/Paynow`, data);
+  }
   updateData(data: any, id: any): Promise<any> {
     return this.client.patch(`${this.baseUrl}/${id}`, data);
   }
@@ -15,6 +18,9 @@ class billApiService extends ApiService {
   }
   deleteData(id: any): Promise<any> {
    return this.client.delete(`${this.baseUrl}/${id}`);
+  }
+  updateStatus(): Promise<any> {
+    return this.client.patch(`${this.baseUrl}/UpdateStatus`);
   }
   itemsStatus0(DEFAULT_COMMON_LIST_QUERY:any): Promise<any> {
     return this.client.get(`${this.baseUrl}/ItemsStatus0`,{

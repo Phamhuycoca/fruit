@@ -18,8 +18,17 @@ export const useDashboard = () => {
     }
   };
 
+  const totalsDashboard=async()=>{
+    try{
+      return await dashboardApi.totalsDashboard();
+    }catch (error) {
+      console.error("Error GetDetail:", error);
+    }
+  };
+
   return {
     storeDashboard,
-    billDashboard
+    billDashboard,
+    totalsDashboard
   };
 };

@@ -51,6 +51,14 @@ export const useBill = () => {
     } 
   };
 
+  const payNow = async (data: any) => {
+    try {
+      return await billApi.payNow(data);
+    } catch (error) {
+      console.error("Error Create:", error);
+    } 
+  };
+
   const updateBill=async(data:any,id:any)=>{
     try{
       return await billApi.updateData(data,id);
@@ -96,6 +104,14 @@ export const useBill = () => {
     } 
   };
 
+  const updateStatus=async()=>{
+    try{
+      return await billApi.updateStatus();
+    }catch (error) {
+      console.error("Error Update:", error);
+    }
+  };
+
   return {
     query,
     fetchBills,
@@ -104,6 +120,8 @@ export const useBill = () => {
     deleteBill,
     getBill,
     searchBills,
-    fetchitemsStatus0
+    fetchitemsStatus0,
+    updateStatus,
+    payNow
   };
 };

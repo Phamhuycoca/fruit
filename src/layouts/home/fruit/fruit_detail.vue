@@ -37,8 +37,8 @@
                                         max="100" style="max-width: 50px;border: 1px;"
                                         variant="underlined"></v-text-field>
                                 </div>
-                                <v-btn size="small" color="#EF6C00">Mua ngay</v-btn>
-                                <v-btn size="small" color="primary">Thêm giỏ hàng</v-btn>
+                                <v-btn size="small" color="#EF6C00" @click="showPay(item)">Mua ngay</v-btn>
+                                <v-btn size="small" color="primary" @click="addToCart(item)">Thêm giỏ hàng</v-btn>
                             </div>
                         </div>
                     </v-card-text>
@@ -55,15 +55,24 @@
                 </v-card>
             </v-col>
         </v-row>
+        <pay_nowDialog :payNow="payNow" :currentItem="currentItem" @closePayNow="payNow = false" />
+
     </div>
 </template>
 
 <script lang="ts" setup>
-import { formatNumberWithCommas, formatPrice } from '@/common/helpers';
+import pay_nowDialog from '@/layouts/home/pay_now/pay_now.vue';
+import { formatNumberWithCommas, formatPrice, showErrorNotification, showErrors, showSuccessNotification } from '@/common/helpers';
 import router from '@/router';
 import { useFruit } from '@/services/fruit.service';
 import { onMounted, ref } from 'vue';
+import { useCart } from '@/services/cart.service';
+import { useAuthService } from '@/services/auth.service';
+const { createCart } = useCart();
+const { isAuthenticated } = useAuthService();
 const { getFruit } = useFruit();
+const payNow = ref(false);
+const currentItem = ref('');
 const item = ref<any | ''>('');
 const count = ref(1);
 const incrementCount = () => {
@@ -71,13 +80,39 @@ const incrementCount = () => {
         count.value += 1;
     }
 };
+const showPay = (item: any) => {
+    if (isAuthenticated.value) {
+        payNow.value = true,
+            currentItem.value = item;
+    } else {
+        showErrorNotification('Hãy đăng nhập để đặt mua');
+    }
 
+}
 const decrementCount = () => {
     if (count.value > 1) {
         count.value -= 1;
     }
 };
-
+const addToCart = async (item: any) => {
+    if (isAuthenticated.value) {
+        const formData = new FormData();
+        formData.append('fruitId', item.fruitId);
+        formData.append('quantity', count.value);
+        formData.append('storeId', item.storeId);
+        const res = await createCart(formData);
+        if (res.success) {
+            showSuccessNotification(res.message)
+        }
+        else {
+            if (res.errors !== undefined) {
+                showErrors(res.errors);
+            }
+        }
+    } else {
+        showErrorNotification('Hãy đăng nhập để đặt mua');
+    }
+}
 const handleDiscountInput = (event: InputEvent) => {
     const inputValue = parseInt((event.target as HTMLInputElement).value, 10);
     if (inputValue > 100) {
@@ -86,6 +121,7 @@ const handleDiscountInput = (event: InputEvent) => {
 }
 onMounted(async () => {
     const id = router.currentRoute.value.params.id;
+
     const res = await getFruit(id);
     item.value = res.data;
 })

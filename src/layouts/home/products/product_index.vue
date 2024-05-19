@@ -56,10 +56,10 @@
                                 </div>
                             </v-card-text>
                             <v-card-actions>
-                                <v-btn size="small" @click="byNow" color="primary" variant="outlined">
+                                <v-btn size="small" @click="showPay(item)" color="primary" variant="outlined">
                                     <v-icon>mdi-credit-card-outline</v-icon>
                                     Mua ngay</v-btn>
-                                <v-btn size="small" @click="byNow" color="red" variant="text">
+                                <v-btn size="small" @click="addToCart(item)" color="red" variant="text">
                                     <v-icon>
                                         mdi-cart-variant
                                     </v-icon>
@@ -82,29 +82,39 @@
                     </v-col>
                 </v-row>
                 <div class="text-center ma-10">
-                    <v-btn variant="outlined" color="primary">
+                    <!-- <v-btn variant="outlined" color="primary">
                         Xem thêm</v-btn>
-                    <v-pagination class="ma-10" :length="4" rounded="circle"></v-pagination>
+                    <v-pagination class="ma-10" :length="4" rounded="circle"></v-pagination> -->
+                    <v-pagination v-model="page" :length="totalItems" class="my-4" rounded="circle"></v-pagination>
+
                 </div>
             </v-col>
         </v-row>
+        <pay_nowDialog :payNow="payNow" :currentItem="currentItem" @closePayNow="payNow = false" />
+
     </div>
 </template>
 
 <script lang="ts" setup>
+import pay_nowDialog from '@/layouts/home/pay_now/pay_now.vue';
+
 import { onMounted, reactive, ref, watch } from 'vue';
 import { useCategory } from "@/services/categoty.service";
 import { useFruit } from '@/services/fruit.service';
 const { fetchFruits, searchGetAllProducts, fetchGetAllProducts } = useFruit();
 import { DEFAULT_COMMON_LIST_QUERY, DEFAULT_COMMON_LIST_QUERY_PRODUCTS } from '@/common/constants';
 import { useAuthService } from '@/services/auth.service';
-import { formatNumberWithCommas, showErrorNotification } from '@/common/helpers';
+import { formatNumberWithCommas, showErrorNotification, showErrors, showSuccessNotification } from '@/common/helpers';
 
 const { fetchCategories } = useCategory();
 const fruits = ref<any | undefined>([]);
 const totalItems = ref<number | undefined>(0);
 const { isAuthenticated } = useAuthService();
 const page = ref(1);
+import { useCart } from '@/services/cart.service';
+const { createCart } = useCart();
+const payNow = ref(false);
+const currentItem = ref('');
 const price = ref('');
 const sale = ref('');
 const categoryId = ref('');
@@ -114,15 +124,43 @@ const show = ref(Array(fruits.value.length).fill(false));
 const toggleDescription = (index: number) => {
     show.value[index] = !show.value[index];
 };
+watch(page, (newVal) => {
+    DEFAULT_COMMON_LIST_QUERY.page = newVal
+    loadData()
+})
 const loadData = async () => {
     const response = await fetchGetAllProducts();
     fruits.value = response?.items;
+    if (response?.totalItems !== undefined) {
+        totalItems.value = Math.ceil(response?.totalItems / 12);
+    }
 }
-const byNow = () => {
+const showPay = (item: any) => {
     if (isAuthenticated.value) {
-        alert('Ok');
+        payNow.value = true,
+            currentItem.value = item;
     } else {
-        showErrorNotification('Vui lòng đăng nhập');
+        showErrorNotification('Hãy đăng nhập để đặt mua');
+    }
+
+}
+const addToCart = async (item: any) => {
+    if (isAuthenticated.value) {
+        const formData = new FormData();
+        formData.append('fruitId', item.fruitId);
+        formData.append('quantity', '1');
+        formData.append('storeId', item.storeId);
+        const res = await createCart(formData);
+        if (res.success) {
+            showSuccessNotification(res.message)
+        }
+        else {
+            if (res.errors !== undefined) {
+                showErrors(res.errors);
+            }
+        }
+    } else {
+        showErrorNotification('Hãy đăng nhập để đặt mua');
     }
 }
 const categories = ref<any | undefined>([]);
